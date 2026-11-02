@@ -2,7 +2,12 @@ __pycache__/
 *.py[cod]
 .venv/
 venv/
+_venv/
 .env
 .streamlit/secrets.toml
 .DS_Store
 Thumbs.db
+runs/
+images/uploaded_product.jpg
+app_backup.py
+main.py
