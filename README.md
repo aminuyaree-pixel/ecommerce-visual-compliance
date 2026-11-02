@@ -1,132 +1,155 @@
 # E-Commerce Visual Intelligence
 
-An AI-powered application for product image analysis, visual similarity search, and preliminary product policy compliance review.
+An academic AI demonstration application for product-image analysis, visual similarity exploration, preliminary description checks, analysis history, analytics, and PDF reporting.
 
-## 1. Project Overview
+> **Important:** This is a demonstration prototype. YOLO detections and CLIP similarity scores are not verified product identities, and the keyword-based policy checker does not determine official marketplace-policy compliance. All findings require human review.
 
-E-Commerce Visual Intelligence combines computer vision and natural language processing to support the examination of product images and descriptions.
+## Features
 
-The application integrates YOLO object detection, CLIP visual similarity search, and automated policy checking in a Streamlit dashboard.
+- **Object detection:** YOLOv8 detects objects in uploaded images using the supplied pretrained model.
+- **Visual similarity:** CLIP compares an image with a small, predefined set of product descriptions and ranks the candidates.
+- **Description review:** A demonstration rule set flags selected phrases that may warrant further review.
+- **Analysis history:** SQLite stores descriptions, image names, detection results, similarity matches, findings, and review status.
+- **Analytics:** Streamlit displays analysis totals, review counts, status charts, and a timeline.
+- **PDF reports:** ReportLab generates downloadable reports for current and historical analyses.
+- **Image gallery:** Upload, search, and view product images.
 
-This project is an academic AI demonstration prototype.
+## Technology stack
 
-## 2. Project Objectives
-
-- Detect objects in product images using YOLO.
-- Identify visually similar products using CLIP.
-- Examine product descriptions for potential policy concerns.
-- Store analysis results using SQLite.
-- Display analysis statistics and historical records.
-- Generate downloadable PDF reports.
-
-## 3. Key Features
-
-- Product image upload and analysis.
-- YOLO object detection.
-- CLIP-based visual similarity search.
-- Automated product policy checking.
-- Product image gallery.
-- Analysis history and search.
-- Analytics dashboard.
-- Historical analysis details.
-- PDF compliance reports.
-
-## 4. Technologies Used
-
-| Technology | Purpose |
+| Component | Technology |
 |---|---|
-| Python | Main programming language |
-| Streamlit | Web application interface |
-| YOLOv8 | Object detection |
-| CLIP | Visual similarity search |
-| Transformers | CLIP model loading |
-| PyTorch | AI model processing |
-| SQLite | Database storage |
-| Pandas | Data analysis |
-| Pillow | Image processing |
-| OpenCV | Computer vision |
-| ReportLab | PDF generation |
+| User interface | Streamlit |
+| Object detection | Ultralytics YOLOv8 |
+| Image/text similarity | OpenAI CLIP via Hugging Face Transformers |
+| Model computation | PyTorch |
+| Image processing | Pillow |
+| Data and analytics | SQLite, pandas |
+| PDF reports | ReportLab |
 
-## 5. Project Structure
+## Repository structure
 
 ```text
 ecommerce-visual-compliance/
-│
 ├── app.py
-├── app_backup.py
-├── main.py
-├── README.md
-├── requirements.txt
-├── .gitignore
-│
 ├── image_detection.py
 ├── visual_search.py
 ├── policy_checker.py
 ├── history.py
 ├── report_generator.py
-│
+├── requirements.txt
 ├── yolov8n.pt
-└── bus.jpg
+├── bus.jpg
+├── README.md
+├── ARCHITECTURE.md
+└── DEMO_GUIDE.md
 ```
 
-## 6. Installation and Setup
+## Requirements
 
-### Step 1: Clone the repository
+- Windows, macOS, or Linux
+- Python 3.12 is the tested Python version for this project
+- Internet access on first run may be needed to download the CLIP model and its processor from Hugging Face
+- Enough memory and disk space for PyTorch and the AI models
+
+## Installation
+
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/aminuyaree-pixel/ecommerce-visual-compliance.git
-```
-
-### Step 2: Enter the project directory
-
-```bash
 cd ecommerce-visual-compliance
 ```
 
-### Step 3: Install dependencies
+### 2. Create and activate a virtual environment
 
-```bash
-pip install -r requirements.txt
+**Windows PowerShell**
+
+```powershell
+py -3.12 -m venv .venv
+.\.venv\Scripts\Activate.ps1
 ```
 
-### Step 4: Run the application
+If PowerShell blocks activation for the current terminal session:
+
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.\.venv\Scripts\Activate.ps1
+```
+
+**macOS / Linux**
+
+```bash
+python3.12 -m venv .venv
+source .venv/bin/activate
+```
+
+### 3. Install dependencies
+
+```bash
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+```
+
+### 4. Run the application
 
 ```bash
 streamlit run app.py
 ```
 
-The application will open in your web browser.
+Streamlit will display a local address in the terminal and open the application in a browser.
 
-## 7. How to Use
+## How to use
 
-1. Open the Streamlit application.
-2. Upload a product image.
-3. Enter the product description.
-4. Click Analyse Product.
-5. Review YOLO object detection results.
-6. Examine CLIP visual similarity results.
-7. Review potential policy concerns.
-8. Download the PDF report.
-9. Explore the analytics dashboard and analysis history.
+1. Upload a JPG, JPEG, or PNG product image.
+2. Enter a description of the product.
+3. Select **Analyse Product**.
+4. Review the YOLO detections.
+5. Review the CLIP candidate descriptions and similarity scores.
+6. Review any matched demonstration policy phrases.
+7. Download the PDF report.
+8. Explore analysis history, analytics, and the product gallery.
 
-## 8. Limitations
+## How the AI components work
 
-- AI detection results may not always be accurate.
-- Visual similarity does not establish product identity.
-- Policy findings are preliminary and require human review.
-- The application is an academic demonstration prototype, not an official compliance certification system.
+### YOLOv8
 
-## 9. Future Improvements
+The supplied `yolov8n.pt` model performs general object detection. It is a pretrained general-purpose model, not a custom-trained e-commerce product classifier. Detection results depend on the objects and classes supported by the model.
 
-- Improved product classification.
-- Expanded product image database.
-- Enhanced policy checking.
-- Cloud deployment.
-- Improved user interface and navigation.
+### CLIP
 
-## 10. Repository
+The application compares the uploaded image against a short, predefined list of text descriptions. The displayed values are relative similarity scores across those candidates. They should not be interpreted as calibrated probabilities or proof of product identity.
 
-GitHub: https://github.com/aminuyaree-pixel/ecommerce-visual-compliance
+### Demonstration policy checker
+
+The policy checker searches the entered description for a small set of configured phrases. It is a rule-based demonstration, not a complete policy engine, legal assessment, or automated approval decision.
+
+## Data and generated files
+
+The application creates local working data, including an SQLite history database and uploaded images. YOLO may also create prediction output folders. These are runtime data and should not normally be committed to GitHub. Review the `.gitignore` file before committing.
+
+Do not upload private, confidential, or personally identifying images or descriptions to a public repository.
+
+## Testing status
+
+The project owner previously reported successful manual checks of product analysis, history, analytics, PDF generation, and the image gallery in a fresh Python 3.12 environment. Re-run these checks after making code or dependency changes and before presenting or deploying the application.
+
+## Known limitations
+
+- The sidebar menu labels are currently informational; they do not navigate to separate application pages.
+- CLIP uses a fixed, small candidate-description list.
+- YOLO uses a general pretrained model rather than an e-commerce-specific custom model.
+- The policy checker only detects configured phrases and can miss issues or flag wording that needs context.
+- Local SQLite and image files are not a multi-user cloud storage solution.
+- The application has not been represented as a production-ready or officially certified compliance system.
+
+## Project documentation
+
+- [System architecture](ARCHITECTURE.md)
+- [Demonstration guide and final checklist](DEMO_GUIDE.md)
+
+## Repository
+
+[GitHub: aminuyaree-pixel/ecommerce-visual-compliance](https://github.com/aminuyaree-pixel/ecommerce-visual-compliance)
 
 **Project:** E-Commerce Visual Intelligence  
-**Type:** Academic AI Demonstration Project
+**Project type:** Academic AI demonstration prototype
